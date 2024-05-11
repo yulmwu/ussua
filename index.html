@@ -9,6 +9,7 @@
             * {
                 font-family: 'Roboto Mono', monospace;
                 font-optical-sizing: auto;
+                font-size: 12px;
             }
             table {
                 border-collapse: collapse;
@@ -19,10 +20,10 @@
                 border: 1px solid black;
                 padding: 5px;
                 text-align: center;
-                background-color: #f7f2de;
-            }
-            th {
                 background-color: #f2f2f2;
+            }
+            td.u {
+                background-color: #faf3d6;
             }
             th.row-header {
                 background-color: #a6d4df;
@@ -56,7 +57,7 @@
                 </tr>
                 <tr>
                     <th class="row-header">0-</th>
-                    <td><!-- 00 --></td>
+                    <td class="u"><!-- 00 -->NOOP</td>
                     <td><!-- 01 --></td>
                     <td><!-- 02 --></td>
                     <td><!-- 03 --></td>
@@ -75,20 +76,20 @@
                 </tr>
                 <tr>
                     <th class="row-header">1-</th>
-                    <td><!-- 10 --></td>
-                    <td><!-- 11 --></td>
-                    <td><!-- 12 --></td>
-                    <td><!-- 13 --></td>
-                    <td><!-- 14 --></td>
+                    <td class="u"><!-- 10 -->ADD</td>
+                    <td class="u"><!-- 11 -->SUB</td>
+                    <td class="u"><!-- 12 -->MUL</td>
+                    <td class="u"><!-- 13 -->DIV</td>
+                    <td class="u"><!-- 14 -->MOD</td>
                     <td><!-- 15 --></td>
                     <td><!-- 16 --></td>
                     <td><!-- 17 --></td>
-                    <td><!-- 18 --></td>
-                    <td><!-- 19 --></td>
-                    <td><!-- 1A --></td>
-                    <td><!-- 1B --></td>
-                    <td><!-- 1C --></td>
-                    <td><!-- 1D --></td>
+                    <td class="u"d><!-- 18 -->AND</td>
+                    <td class="u"><!-- 19 -->OR</td>
+                    <td class="u"><!-- 1A -->XOR</td>
+                    <td class="u"><!-- 1B -->NOT</td>
+                    <td class="u"><!-- 1C -->LSF</td>
+                    <td class="u"><!-- 1D -->RSF</td>
                     <td><!-- 1E --></td>
                     <td><!-- 1F --></td>
                 </tr>
@@ -356,10 +357,26 @@
                     <td><!-- FC --></td>
                     <td><!-- FD --></td>
                     <td><!-- FE --></td>
-                    <td><!-- FF --></td>
+                    <td class="u" desc="Exit the program">
+                        <!-- FF -->EXIT
+                    </td>
                 </tr>
             </table>
-            <p>test</p>
+            <p id="description">NOOP</p>
         </div>
+
+        <script>
+            const description = document.getElementById('description')
+            const cells = document.querySelectorAll('td')
+            cells.forEach((cell)=> {
+                cell.addEventListener('mouseover', (e) => {
+                    const content = e.target.textContent;
+                    if (content != '') {
+                        const desc = e.target.getAttribute('desc')
+                        description.textContent = desc ? `${content} : ${desc}` : `${content}`
+                    }
+                });
+            });
+          </script>
     </body>
 </html>
