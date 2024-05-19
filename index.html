@@ -58,9 +58,9 @@
                 <tr>
                     <th class="row-header">0-</th>
                     <td class="u"><!-- 00 -->NOOP</td>
-                    <td><!-- 01 --></td>
-                    <td><!-- 02 --></td>
-                    <td><!-- 03 --></td>
+                    <td class="u"><!-- 01 -->PUSH</td>
+                    <td class="u"><!-- 02 -->STORE</td>
+                    <td class="u"><!-- 03 -->LOAD</td>
                     <td><!-- 04 --></td>
                     <td><!-- 05 --></td>
                     <td><!-- 06 --></td>
@@ -84,7 +84,7 @@
                     <td><!-- 15 --></td>
                     <td><!-- 16 --></td>
                     <td><!-- 17 --></td>
-                    <td class="u"d><!-- 18 -->AND</td>
+                    <td class="u" d><!-- 18 -->AND</td>
                     <td class="u"><!-- 19 -->OR</td>
                     <td class="u"><!-- 1A -->XOR</td>
                     <td class="u"><!-- 1B -->NOT</td>
@@ -95,20 +95,20 @@
                 </tr>
                 <tr>
                     <th class="row-header">2-</th>
-                    <td><!-- 20 --></td>
-                    <td><!-- 21 --></td>
-                    <td><!-- 22 --></td>
-                    <td><!-- 23 --></td>
-                    <td><!-- 24 --></td>
+                    <td class="u"><!-- 20 -->EQ</td>
+                    <td class="u"><!-- 21 -->GT</td>
+                    <td class="u"><!-- 22 -->LT</td>
+                    <td class="u"><!-- 23 -->GTE</td>
+                    <td class="u"><!-- 24 -->LTE</td>
                     <td><!-- 25 --></td>
                     <td><!-- 26 --></td>
                     <td><!-- 27 --></td>
-                    <td><!-- 28 --></td>
-                    <td><!-- 29 --></td>
-                    <td><!-- 2A --></td>
+                    <td class="u"><!-- 28 -->PROC</td>
+                    <td class="u"><!-- 29 -->CALL</td>
+                    <td class="u"><!-- 2A -->RET</td>
                     <td><!-- 2B --></td>
-                    <td><!-- 2C --></td>
-                    <td><!-- 2D --></td>
+                    <td class="u"><!-- 2C -->JMP</td>
+                    <td class="u"><!-- 2D -->JIF</td>
                     <td><!-- 2E --></td>
                     <td><!-- 2F --></td>
                 </tr>
@@ -356,10 +356,8 @@
                     <td><!-- FB --></td>
                     <td><!-- FC --></td>
                     <td><!-- FD --></td>
-                    <td><!-- FE --></td>
-                    <td class="u" desc="Exit the program">
-                        <!-- FF -->EXIT
-                    </td>
+                    <td class="u" desc="Debugger"><!-- FE -->DBG</td>
+                    <td class="u" desc="Exit the program"><!-- FF -->EXIT</td>
                 </tr>
             </table>
             <p id="description">NOOP</p>
@@ -368,15 +366,17 @@
         <script>
             const description = document.getElementById('description')
             const cells = document.querySelectorAll('td')
-            cells.forEach((cell)=> {
+            cells.forEach((cell) => {
                 cell.addEventListener('mouseover', (e) => {
-                    const content = e.target.textContent;
-                    if (content != '') {
+                    const content = e.target.textContent
+                    if (content.length == 0) {
+                        description.textContent = "Illegal instruction"
+                    } else {
                         const desc = e.target.getAttribute('desc')
                         description.textContent = desc ? `${content} : ${desc}` : `${content}`
-                    }
-                });
-            });
-          </script>
+                    } 
+                })
+            })
+        </script>
     </body>
 </html>
