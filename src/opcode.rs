@@ -1,7 +1,28 @@
-#[derive(Debug, Clone, Copy, PartialEq)]
-#[repr(u8)]
-#[non_exhaustive]
-pub enum Opcode {
+use crate::{BytecodeError, BytecodeErrorKind};
+
+macro_rules! opcodes {
+    ($($variant:ident = $value:expr),* $(,)?) => {
+        #[derive(Debug, Clone, Copy, PartialEq)]
+        #[repr(u8)]
+        #[non_exhaustive]
+        pub enum Opcode {
+            $($variant = $value,)*
+        }
+
+        impl TryFrom<u8> for Opcode {
+            type Error = BytecodeError;
+
+            fn try_from(value: u8) -> Result<Self, Self::Error> {
+                match value {
+                    $($value => Ok(Opcode::$variant),)*
+                    _ => return Err(BytecodeError::new(BytecodeErrorKind::InvalidOpcode(value))),
+                }
+            }
+        }
+    }
+}
+
+opcodes! {
     // 0x0-
     NOOP = 0x00,
     PUSH = 0x01,
