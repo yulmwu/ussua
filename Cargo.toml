@@ -12,3 +12,4 @@ name = "bytecode"
 path = "bin/main.rs"
 
 [dependencies]
+thiserror = "1.0.61"
