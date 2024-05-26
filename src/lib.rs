@@ -15,6 +15,8 @@ pub struct Instructions<'a>(pub &'a [Op]);
 pub enum BytecodeErrorKind {
     #[error("Invalid opcode: `{0}`.")] InvalidOpcode(u8),
     #[error("Empty Stack")] EmptyStack,
+    #[error("Empty Operand")] EmptyOperand,
+    #[error("Address not found in heap store: `{0}`.")] NotFoundAddressInStore(Pointer)
 }
 
 #[derive(Debug, Clone)]
@@ -28,7 +30,10 @@ impl BytecodeError {
         Self { kind, ptr: None }
     }
 
-    pub fn new_with_ptr(kind: BytecodeErrorKind, ptr: Option<Pointer>) -> Self {
-        Self { kind, ptr }
+    pub fn new_with_ptr(kind: BytecodeErrorKind, ptr: Pointer) -> Self {
+        Self {
+            kind,
+            ptr: Some(ptr),
+        }
     }
 }
