@@ -1,14 +1,20 @@
 pub mod opcode;
+pub mod vm;
 
 pub type Value = isize;
 pub type Pointer = usize;
 
+use opcode::Op;
 use thiserror::Error;
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct Instructions<'a>(pub &'a [Op]);
 
 #[derive(Debug, Clone, Error)]
 #[rustfmt::skip]
 pub enum BytecodeErrorKind {
     #[error("Invalid opcode: `{0}`.")] InvalidOpcode(u8),
+    #[error("Empty Stack")] EmptyStack,
 }
 
 #[derive(Debug, Clone)]
