@@ -1,4 +1,5 @@
-use crate::{BytecodeError, BytecodeErrorKind};
+use crate::{BytecodeError, BytecodeErrorKind, Value};
+use std::fmt;
 
 macro_rules! opcodes {
     ($($variant:ident = $value:expr),* $(,)?) => {
@@ -60,4 +61,26 @@ opcodes! {
     // 0xF-
     DBG = 0xFE,
     EXIT = 0xFF,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Op {
+    pub opcode: Opcode,
+    pub operand: Option<Value>,
+}
+
+impl fmt::Display for Op {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if let Some(operand) = self.operand {
+            write!(f, "{:?} {}", self.opcode, operand)
+        } else {
+            write!(f, "{:?}", self.opcode)
+        }
+    }
+}
+
+impl Op {
+    pub fn new(opcode: Opcode, operand: Option<Value>) -> Self {
+        Self { opcode, operand }
+    }
 }
