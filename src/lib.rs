@@ -16,6 +16,7 @@ pub enum BytecodeErrorKind {
     #[error("Invalid opcode: `{0}`.")] InvalidOpcode(u8),
     #[error("Empty Stack")] EmptyStack,
     #[error("Empty Operand")] EmptyOperand,
+    #[error("Empty Call Stack")] EmptyCallStack,
     #[error("Address not found in heap store: `{0}`.")] NotFoundAddressInStore(Pointer)
 }
 

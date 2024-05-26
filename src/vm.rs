@@ -118,9 +118,27 @@ impl<'a> Vm<'a> {
             Opcode::LT => todo!(),
             Opcode::GTE => todo!(),
             Opcode::LTE => todo!(),
-            Opcode::PROC => todo!(),
-            Opcode::CALL => todo!(),
-            Opcode::RET => todo!(),
+            Opcode::PROC => {
+                *pointer = *pointer + (self.get_operand(op, *pointer)? as Pointer) + 1 /* proc */;
+                return Ok(OpExecuted::Continue);
+            }
+            Opcode::CALL => {
+                self.call_stack.push(CallStackFrame {
+                    pointer: *pointer + 1,
+                });
+
+                *pointer = self.get_operand(op, *pointer)? as Pointer + 1 /* call [proc ptr] */;
+                return Ok(OpExecuted::Continue);
+            }
+            Opcode::RET => {
+                let frame = self.call_stack.pop().ok_or(BytecodeError::new_with_ptr(
+                    BytecodeErrorKind::EmptyCallStack,
+                    *pointer,
+                ))?;
+                *pointer = frame.pointer;
+
+                return Ok(OpExecuted::Continue);
+            }
             Opcode::JMP => todo!(),
             Opcode::JIF => todo!(),
             Opcode::DBG => todo!(),
