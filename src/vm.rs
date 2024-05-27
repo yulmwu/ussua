@@ -139,8 +139,16 @@ impl<'a> Vm<'a> {
 
                 return Ok(OpExecuted::Continue);
             }
-            Opcode::JMP => todo!(),
-            Opcode::JIF => todo!(),
+            Opcode::JMP => {
+                *pointer = self.get_operand(op, *pointer)? as Pointer;
+                return Ok(OpExecuted::Continue);
+            }
+            Opcode::JIF => {
+                if self.stack.pop()? == 0 {
+                    *pointer = self.stack.pop()? as Pointer;
+                    return Ok(OpExecuted::Continue);
+                }
+            }
             Opcode::DBG => todo!(),
             Opcode::EXIT => return Ok(OpExecuted::Break),
         }
