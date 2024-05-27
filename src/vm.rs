@@ -79,6 +79,24 @@ impl<'a> Vm<'a> {
     }
 
     fn execute_op(&mut self, op: &Op, pointer: &mut Pointer) -> Result<OpExecuted, BytecodeError> {
+        macro_rules! operator {
+            ($op:tt) => {{
+                let first = self.stack.pop()?;
+                let second = self.stack.pop()?;
+
+                self.stack.push(second $op first);
+            }};
+        }
+
+        macro_rules! inequality {
+            ($op:tt) => {{
+                let first = self.stack.pop()?;
+                let second = self.stack.pop()?;
+
+                self.stack.push(if second $op first { 1 } else { 0 });
+            }};
+        }
+
         match op.opcode {
             Opcode::NOOP => {}
             Opcode::PUSH => {
@@ -102,22 +120,22 @@ impl<'a> Vm<'a> {
 
                 self.stack.push(*value);
             }
-            Opcode::ADD => todo!(),
-            Opcode::SUB => todo!(),
-            Opcode::MUL => todo!(),
-            Opcode::DIV => todo!(),
-            Opcode::MOD => todo!(),
+            Opcode::ADD => operator!(+),
+            Opcode::SUB => operator!(-),
+            Opcode::MUL => operator!(*),
+            Opcode::DIV => operator!(/),
+            Opcode::MOD => operator!(%),
             Opcode::AND => todo!(),
             Opcode::OR => todo!(),
             Opcode::XOR => todo!(),
             Opcode::NOT => todo!(),
             Opcode::LSF => todo!(),
             Opcode::RSF => todo!(),
-            Opcode::EQ => todo!(),
-            Opcode::GT => todo!(),
-            Opcode::LT => todo!(),
-            Opcode::GTE => todo!(),
-            Opcode::LTE => todo!(),
+            Opcode::EQ => inequality!(==),
+            Opcode::GT => inequality!(>),
+            Opcode::LT => inequality!(<),
+            Opcode::GTE => inequality!(>=),
+            Opcode::LTE => inequality!(<=),
             Opcode::PROC => {
                 *pointer = *pointer + (self.get_operand(op, *pointer)? as Pointer) + 1 /* proc */;
                 return Ok(OpExecuted::Continue);
