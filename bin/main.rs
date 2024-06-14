@@ -1,4 +1,4 @@
-use ussua::{opcode::{Op, Opcode}, vm::Vm, Instructions};
+use ussua::{debugger::DebugPrint, opcode::{Op, Opcode}, vm::Vm, Instructions};
 
 fn main() {
     let a = Opcode::try_from(0xFF).unwrap();
@@ -13,6 +13,6 @@ fn main() {
     ];
     let instructions = Instructions(&instructions);
 
-    let mut vm = Vm::new(instructions);
+    let mut vm = Vm::<DebugPrint>::new(instructions);
     vm.execute().unwrap();
 }
