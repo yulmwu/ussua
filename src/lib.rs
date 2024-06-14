@@ -1,3 +1,4 @@
+pub mod debugger;
 pub mod opcode;
 pub mod vm;
 

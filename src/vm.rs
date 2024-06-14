@@ -1,9 +1,9 @@
-use std::collections::HashMap;
-
 use crate::{
+    debugger::{DebugKind, Debugger},
     opcode::{Op, Opcode},
     BytecodeError, BytecodeErrorKind, Instructions, Pointer, Value,
 };
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Default)]
 pub struct Stack(pub Vec<Value>);
@@ -21,11 +21,12 @@ impl Stack {
 }
 
 #[derive(Debug, Default)]
-pub struct Vm<'a> {
+pub struct Vm<'a, T: Debugger> {
     pub instructions: Instructions<'a>,
     stack: Stack,
     call_stack: CallStack,
     heap_store: Store,
+    debugger: T,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -43,7 +44,7 @@ enum OpExecuted {
     Break,
 }
 
-impl<'a> Vm<'a> {
+impl<'a, T: Debugger> Vm<'a, T> {
     pub fn new(instructions: Instructions<'a>) -> Self {
         Vm {
             instructions,
@@ -169,7 +170,9 @@ impl<'a> Vm<'a> {
                     return Ok(OpExecuted::Continue);
                 }
             }
-            Opcode::DBG => todo!(),
+            Opcode::DBG => self
+                .debugger
+                .debug(DebugKind::Info, self.stack.pop()?.to_string().as_str()),
             Opcode::EXIT => return Ok(OpExecuted::Break),
         }
 
