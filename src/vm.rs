@@ -1,5 +1,5 @@
 use crate::{
-    debugger::{DebugKind, Debugger},
+    debugger::{DebugMessage, Debugger},
     opcode::{Op, Opcode},
     BytecodeError, BytecodeErrorKind, Instructions, Pointer, Value,
 };
@@ -56,6 +56,9 @@ impl<'a, T: Debugger> Vm<'a, T> {
         let mut pointer = 0;
 
         while let Some(op) = self.instructions.0.get(pointer) {
+            self.debugger
+                .debug(DebugMessage::InstructionTrace(op, pointer));
+
             match self.execute_op(op, &mut pointer)? {
                 OpExecuted::Ok => {}
                 OpExecuted::Continue => {
@@ -170,9 +173,9 @@ impl<'a, T: Debugger> Vm<'a, T> {
                     return Ok(OpExecuted::Continue);
                 }
             }
-            Opcode::DBG => self
-                .debugger
-                .debug(DebugKind::Info, self.stack.pop()?.to_string().as_str()),
+            Opcode::DBG => self.debugger.debug(DebugMessage::DbgInstruction(
+                self.stack.pop()?.to_string().as_str(),
+            )),
             Opcode::EXIT => return Ok(OpExecuted::Break),
         }
 

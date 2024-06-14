@@ -1,4 +1,9 @@
-use ussua::{debugger::DebugPrint, opcode::{Op, Opcode}, vm::Vm, Instructions};
+use ussua::{
+    debugger::DebugPrint,
+    opcode::{Op, Opcode},
+    vm::Vm,
+    Instructions,
+};
 
 fn main() {
     let a = Opcode::try_from(0xFF).unwrap();
