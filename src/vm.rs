@@ -80,16 +80,18 @@ impl<'a> Vm<'a> {
 
     fn execute_op(&mut self, op: &Op, pointer: &mut Pointer) -> Result<OpExecuted, BytecodeError> {
         macro_rules! operator {
-            ($op:tt) => {{
+            (unary $op:tt) => {{
+                let first = self.stack.pop()?;
+
+                self.stack.push($op first);
+            }};
+            (binary $op:tt) => {{
                 let first = self.stack.pop()?;
                 let second = self.stack.pop()?;
 
                 self.stack.push(second $op first);
             }};
-        }
-
-        macro_rules! inequality {
-            ($op:tt) => {{
+            (eq $op:tt) => {{
                 let first = self.stack.pop()?;
                 let second = self.stack.pop()?;
 
@@ -120,22 +122,22 @@ impl<'a> Vm<'a> {
 
                 self.stack.push(*value);
             }
-            Opcode::ADD => operator!(+),
-            Opcode::SUB => operator!(-),
-            Opcode::MUL => operator!(*),
-            Opcode::DIV => operator!(/),
-            Opcode::MOD => operator!(%),
-            Opcode::AND => todo!(),
-            Opcode::OR => todo!(),
-            Opcode::XOR => todo!(),
-            Opcode::NOT => todo!(),
-            Opcode::LSF => todo!(),
-            Opcode::RSF => todo!(),
-            Opcode::EQ => inequality!(==),
-            Opcode::GT => inequality!(>),
-            Opcode::LT => inequality!(<),
-            Opcode::GTE => inequality!(>=),
-            Opcode::LTE => inequality!(<=),
+            Opcode::ADD => operator!(binary+),
+            Opcode::SUB => operator!(binary -),
+            Opcode::MUL => operator!(binary *),
+            Opcode::DIV => operator!(binary /),
+            Opcode::MOD => operator!(binary %),
+            Opcode::AND => operator!(binary &),
+            Opcode::OR => operator!(binary |),
+            Opcode::XOR => operator!(binary ^),
+            Opcode::NOT => operator!(unary !),
+            Opcode::LSF => operator!(binary <<),
+            Opcode::RSF => operator!(binary >>),
+            Opcode::EQ => operator!(eq ==),
+            Opcode::GT => operator!(eq >),
+            Opcode::LT => operator!(eq <),
+            Opcode::GTE => operator!(eq >=),
+            Opcode::LTE => operator!(eq <=),
             Opcode::PROC => {
                 *pointer = *pointer + (self.get_operand(op, *pointer)? as Pointer) + 1 /* proc */;
                 return Ok(OpExecuted::Continue);
