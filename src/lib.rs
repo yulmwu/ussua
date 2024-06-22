@@ -1,3 +1,4 @@
+pub mod b2i;
 pub mod debugger;
 pub mod opcode;
 pub mod vm;
@@ -8,7 +9,7 @@ pub type Pointer = usize;
 use opcode::Op;
 use thiserror::Error;
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Instructions<'a>(pub &'a [Op]);
 
 #[derive(Debug, Clone, Error)]
