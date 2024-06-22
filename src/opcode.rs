@@ -3,7 +3,7 @@ use std::fmt;
 
 macro_rules! opcodes {
     ($($variant:ident = $value:expr),* $(,)?) => {
-        #[derive(Debug, Clone, Copy, PartialEq)]
+        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
         #[repr(u8)]
         #[non_exhaustive]
         pub enum Opcode {
@@ -63,7 +63,7 @@ opcodes! {
     EXIT = 0xFF,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Op {
     pub opcode: Opcode,
     pub operand: Option<Value>,
