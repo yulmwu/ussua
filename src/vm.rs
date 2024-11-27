@@ -169,7 +169,7 @@ impl<'a, T: Debugger> Vm<'a, T> {
             }
             Opcode::JIF => {
                 if self.stack.pop()? == 0 {
-                    *pointer = self.stack.pop()? as Pointer;
+                    *pointer = self.get_operand(op, *pointer)? as Pointer;
                     return Ok(OpExecuted::Continue);
                 }
             }
